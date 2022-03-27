@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>NekoCore Token Claim Checker</title>
+  <meta name="description" content="Check if your NekoCore tokens have been claimed yet">
+  <meta name="author" content="lza_menace">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/skeleton.css">
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+</head>
+<body>
+  <div class="section header">
+    <div class="container">
+      <a href="https://nekocore.io"><img class="u-max-full-width" src="/static/images/logo.png"></a>
+      <div></div>
+      <h3 class="section-heading">Token claim checker</h3>
+      <h5 class="section-description" style="color: #aaa">Use this utility to check if your token has been claimed. Check your token IDs <a href="https://opensea.io/account/nekocore?search[resultModel]=ASSETS&search[sortBy]=LAST_TRANSFER_DATE" target="_blank">here</a></h5>
+      <input type="number" step="0" name="tokenId" id="tokenId"></input>
+      <div></div>
+      <a class="button button-secondary" href="#" id="checkTokenClaimed">Check</a>
+      <p id="claimedResult" class=""></p>
+      <hr>
+      <a class="button button-primary" href="https://nekocore.io/">Official Website</a>
+    </div>
+  </div>
+  <script src="/static/js/vendor/metamask-onboarding.bundle.js"></script>
+  <script src="/static/js/vendor/web3-1.3.6.min.js"></script>
+  <script src="/static/js/abi.js?v=1"></script>
+  <script src="/static/js/main.js?v=1"></script>
+</body>
+</html>
