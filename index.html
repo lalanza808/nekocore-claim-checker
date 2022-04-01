@@ -19,12 +19,11 @@
       <div></div>
       <h3 class="section-heading">Token claim checker</h3>
       <h5 class="section-description" style="color: #aaa">Use this utility to check if your token has been claimed. Check your token IDs <a href="https://opensea.io/account/nekocore?search[resultModel]=ASSETS&search[sortBy]=LAST_TRANSFER_DATE" target="_blank">here</a></h5>
-      <input type="number" step="0" name="tokenId" id="tokenId"></input>
-      <div></div>
-      <a class="button button-secondary" href="#" id="checkTokenClaimed">Check</a>
-      <p id="claimedResult" class=""></p>
-      <hr>
       <a class="button button-primary" href="https://nekocore.io/">Official Website</a>
+      <hr>
+      <a class="button button-secondary" href="#" id="checkTokens">Check Tokens</a>
+      <a class="button button-primary hidden" href="" id="stopChecks">Stop</a>
+      <ul id="tokenList"></ul>
     </div>
   </div>
   <script src="/static/js/vendor/metamask-onboarding.bundle.js"></script>

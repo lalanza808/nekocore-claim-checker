@@ -153,7 +153,22 @@
 }
 
 .success {
-  background-color: rgba(0,253,32, .5)
+  background-color: rgba(0,253,32, .5);
+}
+
+.warn {
+  background-color: rgba(216,119,55, .5);
+}
+
+li {
+  width: 50%;
+  margin: .5em auto;
+  padding: .5em;
+  border-radius: 6px;
+}
+
+.hidden {
+  display: none !important;
 }
 
 #claimedResult {

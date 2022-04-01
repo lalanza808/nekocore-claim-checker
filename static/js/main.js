@@ -1,8 +1,8 @@
 window.addEventListener('DOMContentLoaded', async () => {
   let accounts;
   const onboarding = new MetaMaskOnboarding();
-  const checkTokenClaimedButton = document.getElementById('checkTokenClaimed');
-  const tokenIdInput = document.getElementById('tokenId');
+  const checkTokensButton = document.getElementById('checkTokens');
+  const stopChecksButton = document.getElementById('stopChecks');
 
   // Offer to install MetaMask if it's not installed nor do we
   // detect a replacement such as Coinbase wallet
@@ -13,34 +13,27 @@ window.addEventListener('DOMContentLoaded', async () => {
     onboarding.stopOnboarding();
   }
 
-  checkTokenClaimedButton.onclick = async () => {
-    await _checkTokenClaimed();
+  checkTokensButton.onclick = async () => {
+    stopChecksButton.classList.remove('hidden');
+    checkTokensButton.innerHTML = 'Checking...this may take a while'
+    await _checkTokensClaimed();
   };
-
-  tokenIdInput.onkeyup = async (e) => {
-    if (e.key == 'Enter') {
-      await _checkTokenClaimed();
-    }
-  }
 
   ethereum.on('accountsChanged', function (accounts) {
     window.location.href = '';
   })
 });
 
-async function _checkTokenClaimed() {
+async function _checkTokensClaimed() {
   try {
     await switchNetwork();
-    await checkTokenClaimed();
+    let tokenList = document.getElementById('tokenList');
+    for(i=251; i<=1106; i++) {
+      let _n = await checkTokenClaimed(i);
+      tokenList.appendChild(_n);
+    }
   } catch(e) {
     console.log(e)
-    if (e.message = 'Invalid JSON RPC response: ""') {
-      let res = document.getElementById('claimedResult');
-      res.innerHTML = `You do not need to connect it, but you at least need Metamask or Coinbase wallet browser extension installed to use this.`;
-      res.classList.add('fail');
-      res.classList.remove('success');
-      return;
-    }
     return false;
   }
 }
@@ -58,41 +51,35 @@ async function getMMAccount() {
 }
 
 async function switchNetwork(){
-  // don't do this if no metamask (errors on coinbase wallet)
-  if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
-    return false;
-  }
   await ethereum.request({
     method: 'wallet_switchEthereumChain',
     params: [{ chainId: '0x1' }],
   });
 }
 
-async function checkTokenClaimed() {
+async function checkTokenClaimed(tokenId) {
+  let msg;
+  let color;
   const w3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
-  let res = document.getElementById('claimedResult');
-  let tokenId = document.getElementById('tokenId').value;
-  if (tokenId <= 0 || tokenId > 9999 || isNaN(tokenId)) {
-    alert('Invalid token ID supplied. Try again (1-9999)');
-  }
-
   if (tokenId > 1106) {
-    res.innerHTML = `Token ${tokenId} not elligible for claiming free Nekos!`;
-    res.classList.add('fail');
-    res.classList.remove('success');
-    return;
-  }
-
-  const contract = new w3.eth.Contract(abi, address);
-  const claimed = await contract.methods.TIMES_CLAIMED(tokenId).call();
-
-  if (claimed == 0) {
-    res.innerHTML = `Token ${tokenId} not yet claimed!`;
-    res.classList.add('fail');
-    res.classList.remove('success');
+    msg = `Token ${tokenId} not elligible for claiming free Nekos!`;
+    color = 'fail';
+  } else if (tokenId <= 250) {
+    msg = `Token ${tokenId} not elligible for claiming free Nekos!`;
+    color = 'warn';
   } else {
-    res.innerHTML = `Token ${tokenId} already claimed!`;
-    res.classList.add('success');
-    res.classList.remove('fail');
+    contract = new w3.eth.Contract(abi, address);
+    claimed = await contract.methods.TIMES_CLAIMED(tokenId).call();
+    if (claimed == 0) {
+      msg = `Token ${tokenId} not yet claimed!`;
+      color = 'success';
+    } else {
+      msg = `Token ${tokenId} already claimed!`;
+      color = 'fail';
+    }
   }
+  let _n = document.createElement('li');
+  _n.classList.add(color);
+  _n.innerHTML = msg;
+  return _n
 }
