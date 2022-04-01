@@ -12,8 +12,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   } else if (accounts && accounts.length > 0) {
     onboarding.stopOnboarding();
   }
-  await switchNetwork();
-  await getMMAccount();
 
   checkTokenClaimedButton.onclick = async () => {
     await _checkTokenClaimed();
@@ -32,9 +30,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 async function _checkTokenClaimed() {
   try {
+    await switchNetwork();
     await checkTokenClaimed();
   } catch(e) {
     console.log(e)
+    if (e.message = 'Invalid JSON RPC response: ""') {
+      let res = document.getElementById('claimedResult');
+      res.innerHTML = `You do not need to connect it, but you at least need Metamask or Coinbase wallet browser extension installed to use this.`;
+      res.classList.add('fail');
+      res.classList.remove('success');
+      return;
+    }
     return false;
   }
 }
@@ -64,14 +70,20 @@ async function switchNetwork(){
 
 async function checkTokenClaimed() {
   const w3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
-  const walletAddress = await getMMAccount();
   let res = document.getElementById('claimedResult');
   let tokenId = document.getElementById('tokenId').value;
   if (tokenId <= 0 || tokenId > 9999 || isNaN(tokenId)) {
     alert('Invalid token ID supplied. Try again (1-9999)');
   }
 
-  const contract = new w3.eth.Contract(abi, address, {from: walletAddress});
+  if (tokenId > 1106) {
+    res.innerHTML = `Token ${tokenId} not elligible for claiming free Nekos!`;
+    res.classList.add('fail');
+    res.classList.remove('success');
+    return;
+  }
+
+  const contract = new w3.eth.Contract(abi, address);
   const claimed = await contract.methods.TIMES_CLAIMED(tokenId).call();
 
   if (claimed == 0) {
