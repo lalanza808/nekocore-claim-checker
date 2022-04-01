@@ -2,7 +2,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   let accounts;
   const onboarding = new MetaMaskOnboarding();
   const checkTokensButton = document.getElementById('checkTokens');
-  const stopChecksButton = document.getElementById('stopChecks');
 
   // Offer to install MetaMask if it's not installed nor do we
   // detect a replacement such as Coinbase wallet
@@ -14,7 +13,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   checkTokensButton.onclick = async () => {
-    stopChecksButton.classList.remove('hidden');
     checkTokensButton.innerHTML = 'Checking...this may take a while'
     await _checkTokensClaimed();
   };
@@ -26,11 +24,18 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 async function _checkTokensClaimed() {
   try {
-    await switchNetwork();
+    let amt = 0;
+    let unclaimedAmount = document.getElementById('unclaimedAmount');
     let tokenList = document.getElementById('tokenList');
+    await switchNetwork();
+
     for(i=251; i<=1106; i++) {
       let _n = await checkTokenClaimed(i);
-      tokenList.appendChild(_n);
+      if (_n) {
+        tokenList.appendChild(_n);
+        amt++
+        unclaimedAmount.innerHTML = amt;
+      }
     }
   } catch(e) {
     console.log(e)
@@ -74,8 +79,7 @@ async function checkTokenClaimed(tokenId) {
       msg = `Token ${tokenId} not yet claimed! <a href="https://opensea.io/assets/0xc1328cf1cf8db8a5fc407cd56759007c7d20e398/${tokenId}" target=_blank>OpenSea</a>`;
       color = 'success';
     } else {
-      msg = `Token ${tokenId} already claimed! <a href="https://opensea.io/assets/0xc1328cf1cf8db8a5fc407cd56759007c7d20e398/${tokenId}" target=_blank>OpenSea</a>`;
-      color = 'fail';
+      return;
     }
   }
   let _n = document.createElement('li');
