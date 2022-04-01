@@ -71,10 +71,10 @@ async function checkTokenClaimed(tokenId) {
     contract = new w3.eth.Contract(abi, address);
     claimed = await contract.methods.TIMES_CLAIMED(tokenId).call();
     if (claimed == 0) {
-      msg = `Token ${tokenId} not yet claimed!`;
+      msg = `Token ${tokenId} not yet claimed! <a href="https://opensea.io/assets/0xc1328cf1cf8db8a5fc407cd56759007c7d20e398/${tokenId}" target=_blank>OpenSea</a>`;
       color = 'success';
     } else {
-      msg = `Token ${tokenId} already claimed!`;
+      msg = `Token ${tokenId} already claimed! <a href="https://opensea.io/assets/0xc1328cf1cf8db8a5fc407cd56759007c7d20e398/${tokenId}" target=_blank>OpenSea</a>`;
       color = 'fail';
     }
   }
